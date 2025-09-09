@@ -22,10 +22,11 @@ async function* streamGenerator(stream) {
         const chunk = decoder.decode(value, { stream: true });
         rawOpenAIStreamResponse += chunk;
         buffer += chunk;
-
+        //chunk 是以换行符分割 chunk的，有换行符是完整的chunk
         const lines = buffer.split('\n');
+        //最后一行可能是不完整的，等到最后一次处理
         buffer = lines.pop();
-
+        //处理已经接收的完整 chunk 一次read 得到多个chunk是正常的
         for (const line of lines) {
             if (line.startsWith('data: ')) {
                 const data = line.substring(6);
